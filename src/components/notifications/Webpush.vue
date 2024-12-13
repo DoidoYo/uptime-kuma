@@ -22,20 +22,68 @@ export default {
         }
     },
     methods: {
+        // window.addEventListener('load', () => {
+        //     console.log("LOADED");
+        // }),
         async registerWebpush() {
+
+
             console.log("PRESSED");
             const publicVapidKey = "BOd2EQ8LTe3KAgMX9lWwTlHTRzv1Iantw50Mw6pUnsNr3pcxl8iglUs-YlQEQLo4UbJk9oyXs_BxgyAe0TCqKME";
             
-            const register = await navigator.serviceWorker.register('./../worker.js', {
-                scope: '/'
+            // Notification.requestPermission();
+
+            Notification.requestPermission().then((permission) => {
+                if (permission === 'granted') {
+                    console.log('Notification permission granted.');
+                    navigator.serviceWorker.ready.then((registration) => {
+                        registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: publicVapidKey })
+                            .then((subscription) => {
+                                console.log('Subscribed for push:', subscription.endpoint);
+                                console.log('Subscribed for push:', subscription);
+                                this.$parent.notification.sub = subscription; // `this` now works as expected
+                            })
+                            .catch((error) => {
+                                console.log('Subscription failed:', error);
+                            });
+                    });
+                } else {
+                    console.log('Unable to get permission to notify.');
+                }
             });
 
-            const subscription = await register.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: publicVapidKey,
-            });
+            // if ('serviceWorker' in navigator) {
+            //     console.log("HERE!");
 
-            this.$parent.notification.sub = subscription;
+            //     const register = navigator.serviceWorker.getRegistration();
+            //     const subscription = await register.pushManager.subscribe({
+            //         userVisibleOnly: true,
+            //         applicationServerKey: publicVapidKey,
+            //     });
+            //     this.$parent.notification.sub = subscription;
+            //     // void (await navigator.serviceWorker.ready).dispatchEvent({
+            //     //     const subscription = await register.pushManager.subscribe({
+            //     //         userVisibleOnly: true,
+            //     //         applicationServerKey: publicVapidKey,
+            //     //     });
+
+            //     //     this.$parent.notification.sub = subscription;
+            //     // });
+
+            // } else {
+            //     console.log("browser doesnt support notification");
+            // }
+
+            // const register = await navigator.serviceWorker.register('../public/serviceWorker.ts', {
+            //     scope: '/'
+            // });
+
+            // const subscription = await register.pushManager.subscribe({
+            //     userVisibleOnly: true,
+            //     applicationServerKey: publicVapidKey,
+            // });
+
+            // this.$parent.notification.sub = subscription;
 
         }
     },

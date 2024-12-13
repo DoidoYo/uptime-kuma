@@ -39,7 +39,7 @@ class Webpush extends NotificationProvider {
                 //     ]
                 // };
 
-                // await axios.post(notification.webhookURL, data);
+                // await axios.post(notification.sub.endpoint, payload);
                 return okMsg;
             }
 

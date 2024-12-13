@@ -3,6 +3,7 @@ import { defineConfig } from "vite";
 import visualizer from "rollup-plugin-visualizer";
 import viteCompression from "vite-plugin-compression";
 import VueDevTools from "vite-plugin-vue-devtools";
+import { VitePWA } from 'vite-plugin-pwa'
 
 const postCssScss = require("postcss-scss");
 const postcssRTLCSS = require("postcss-rtlcss");
@@ -32,6 +33,31 @@ export default defineConfig({
             filter: viteCompressionFilter,
         }),
         VueDevTools(),
+        VitePWA({
+            registerType: null,
+            // outDir: path.resolve(__dirname, 'public'),
+            // manifest: manifest,
+            // manifestFilename: 'manifest.json', // Change name for app manifest
+            // injectRegister: false, // I register SW in app.ts, disable auto registration
+            
+            // // HERE! For custom service worker
+            srcDir: 'src',
+            filename: 'serviceWorker.ts',
+            strategies: 'injectManifest',
+            // injectRegister: false,
+
+        
+            // workbox: {
+            //     globDirectory: path.resolve(__dirname, 'public'),
+            //     globPatterns: [
+            //     '{build,images,sounds,icons}/**/*.{js,css,html,ico,png,jpg,mp4,svg}'
+            //     ],
+            // },
+            devOptions: {
+                enabled: true,
+                type: 'module'
+            },
+        }),
     ],
     css: {
         postcss: {
